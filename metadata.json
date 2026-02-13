@@ -1,0 +1,8 @@
+
+{
+  "name": "FuturePath AI",
+  "description": "A career intelligence platform that maps your current skills to high-demand future professions using real-time market data and AI forecasting.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
