@@ -3,10 +3,10 @@ import React from 'react';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip 
 } from 'recharts';
-import { Skill } from '../types';
+
 
 interface SkillVisualizerProps {
-  skills: Skill[];
+  skills: any[];
   careerTitle: string;
 }
 

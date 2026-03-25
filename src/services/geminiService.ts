@@ -25,22 +25,39 @@ export const getCareerIntelligence = async (
   profile: UserProfile
 ): Promise<CareerRecommendation[]> => {
   try {
-    const response = await fetch("http://localhost:5000/career-forecast", {
+    // include auth token if available so the protected endpoint will accept the request
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:5000/api/forecast/career-forecast", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(profile),
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      // if auth failed, clear stored token so UI can redirect
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
+      const errorData = await response.json().catch(() => ({}));
+      // include details field if present
+      const serverMsg = errorData?.error;
+      const detailMsg = errorData?.details;
       throw new Error(
-        errorData?.error || "Career forecasting request failed"
+        serverMsg + (detailMsg ? `: ${detailMsg}` : "") || "Career forecasting request failed"
       );
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      throw new Error("Server returned invalid JSON");
+    }
 
     if (!Array.isArray(data)) {
       throw new Error("Invalid response format from server");
