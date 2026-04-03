@@ -1,4 +1,5 @@
 // src/services/geminiService.tsx
+import api from "./api";
 
 export interface UserProfile {
   currentRole: string;
@@ -25,38 +26,22 @@ export const getCareerIntelligence = async (
   profile: UserProfile
 ): Promise<CareerRecommendation[]> => {
   try {
-    // include auth token if available so the protected endpoint will accept the request
-    const token = localStorage.getItem("token");
+    const response = await api.post("/api/forecast/career-forecast", profile);
+    const data = response.data;
 
-    const response = await fetch("http://localhost:5000/api/forecast/career-forecast", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify(profile),
-    });
-
-    if (!response.ok) {
+    if (response.status >= 400) {
       // if auth failed, clear stored token so UI can redirect
       if (response.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
       }
-      const errorData = await response.json().catch(() => ({}));
+      const errorData = response.data;
       // include details field if present
       const serverMsg = errorData?.error;
       const detailMsg = errorData?.details;
       throw new Error(
         serverMsg + (detailMsg ? `: ${detailMsg}` : "") || "Career forecasting request failed"
       );
-    }
-
-    let data;
-    try {
-      data = await response.json();
-    } catch (e) {
-      throw new Error("Server returned invalid JSON");
     }
 
     if (!Array.isArray(data)) {

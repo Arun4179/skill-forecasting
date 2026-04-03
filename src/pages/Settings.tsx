@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 
 const Settings: React.FC = () => {
   const navigate = useNavigate();
@@ -36,14 +36,9 @@ const Settings: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await axios.put(
-        "http://localhost:5000/api/auth/me/password",
-        { currentPassword, newPassword },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await api.put(
+        "/api/auth/me/password",
+        { currentPassword, newPassword }
       );
 
       setMessage(res.data?.message || "Password updated successfully.");
@@ -70,11 +65,7 @@ const Settings: React.FC = () => {
     setMessage(null);
 
     try {
-      await axios.delete("http://localhost:5000/api/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete("/api/auth/me");
 
       localStorage.removeItem("token");
       localStorage.removeItem("user");

@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import { AssessmentState } from '../types';
 import { getCareerIntelligence } from '../services/geminiService';
 import { CareerCard } from '../components/CareerCard';
@@ -201,12 +200,7 @@ const Assessment: React.FC = () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('Missing auth token');
-
-      await axios.delete("http://localhost:5000/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete("/api/auth/me");
 
       localStorage.removeItem('token');
       localStorage.removeItem('user');
