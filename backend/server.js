@@ -7,6 +7,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth.js";
 import forecastRoutes from "./routes/forecast.js";
 import resumeRoutes from "./routes/resume.js";
+import courseRoutes from "./routes/courses.js";
 
 dotenv.config();
 
@@ -30,7 +31,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/forecast", forecastRoutes);
 app.use("/api/resume", resumeRoutes);
-
+app.use("/api/courses", courseRoutes);
 
 /* =========================
    Global Error Handler

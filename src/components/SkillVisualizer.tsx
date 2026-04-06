@@ -11,11 +11,11 @@ interface SkillVisualizerProps {
 }
 
 export const SkillVisualizer: React.FC<SkillVisualizerProps> = ({ skills, careerTitle }) => {
-  const data = skills.map(s => ({
-    subject: s.name,
-    A: s.demandScore,
+  const data = Array.isArray(skills) ? skills.map((s: any) => ({
+    subject: s.name || s.title || 'Unknown',
+    A: s.demandScore || 50,
     fullMark: 100,
-  }));
+  })) : [];
 
   return (
     <div className="w-full h-[300px] mt-4">
