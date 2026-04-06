@@ -30,6 +30,14 @@ const forecastSchema = new mongoose.Schema(
           },
         ],
         learningPath: [String],
+        suggestedCourses: [
+          {
+            name: String,
+            platform: String,
+            description: String,
+            estimatedHours: String,
+          },
+        ],
       },
     ],
   },

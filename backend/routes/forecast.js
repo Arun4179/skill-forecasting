@@ -51,7 +51,10 @@ Return 3 future-proof career paths in this format:
     "keySkills": [
       { "name": "", "category": "", "demandScore": 0 }
     ],
-    "learningPath": [""]
+    "learningPath": [""],
+    "suggestedCourses": [
+      { "name": "", "platform": "", "description": "", "estimatedHours": "", "url": "URL to the course or search link" }
+    ]
   }
 ]
 `;

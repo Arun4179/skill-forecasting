@@ -20,6 +20,18 @@ const Assessment: React.FC = () => {
     error: null,
   });
 
+  const [enrolledCourses, setEnrolledCourses] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    if (state.step === 0) {
+      api.get("/api/courses").then(res => {
+        setEnrolledCourses(res.data);
+      }).catch(err => {
+        console.error("Failed to fetch enrolled courses", err);
+      });
+    }
+  }, [state.step]);
+
   const navigate = useNavigate();
 
   // pull user info from storage so we can show their name in the header
@@ -266,6 +278,40 @@ const Assessment: React.FC = () => {
             <Button size="lg" className="rounded-xl px-12 py-5 text-xl shadow-2xl hover:scale-105 transition-transform" onClick={handleNextStep}>
               Begin Intelligence Scan
             </Button>
+
+            {enrolledCourses.length > 0 && (
+              <div className="mt-16 text-left animate-fade-in">
+                <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center">
+                  <i className="fas fa-book-open text-indigo-500 mr-3"></i>
+                  Your Active Learning Paths
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {enrolledCourses.map((course, idx) => (
+                    <div key={idx} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                      <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-bold text-slate-800 pr-4">{course.name}</h4>
+                        <span className="text-xs font-semibold px-2 py-1 bg-slate-100 text-slate-600 rounded whitespace-nowrap">
+                          {course.platform}
+                        </span>
+                      </div>
+                      <p className="text-sm text-slate-600 mb-4 line-clamp-2">{course.description}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs text-slate-500 font-medium">
+                          <i className="far fa-clock mr-1.5"></i> {course.estimatedHours}
+                        </div>
+                        <button 
+                          onClick={() => window.open(course.url, '_blank')}
+                          className="text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
+                        >
+                          Continue Study <i className="fas fa-arrow-right ml-1"></i>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
